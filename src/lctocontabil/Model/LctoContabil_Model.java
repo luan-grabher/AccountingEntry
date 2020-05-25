@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lctocontabil.Entity.ComandosSql;
 import lctocontabil.Entity.LctoContabil;
-import sql.Banco;
+import sql.Database;
 
 public class LctoContabil_Model {
 
@@ -20,14 +20,14 @@ public class LctoContabil_Model {
     private final ComandosSql comandosSql;
     private final String pathBancoSql;
 
-    private final Banco banco;
+    private final Database banco;
     private ArrayList<String[]> rs;
 
     public LctoContabil_Model(ComandosSql comandosSql, String pathBancoSql) {
         this.comandosSql = comandosSql;
         this.pathBancoSql = pathBancoSql;
 
-        banco = new Banco(this.pathBancoSql);
+        banco = new Database(this.pathBancoSql);
     }
 
     public void definirLancamentos(String filtroSql, Integer codEmpresa, String dataInicio, String dataFinal, Integer contaCTB) {
