@@ -1,7 +1,7 @@
 package lctocontabil.Model;
 
 import Auxiliar.Valor;
-import Executor.View.Carregamento;
+import SimpleView.Loading;
 import java.util.ArrayList;
 import java.util.List;
 import lctocontabil.Entity.ComandosSql;
@@ -64,11 +64,11 @@ public class LctoContabil_Model {
 
     public void fazerUpdateNoBanco() {
         try {
-            Carregamento barra = new Carregamento("Atualizando lançamentos no banco", 0, lctos.size());
+            Loading barra = new Loading("Atualizando lançamentos no banco", 0, lctos.size());
 
             //Percorre todos lctos
             for (int i = 0; i < lctos.size(); i++) {
-                barra.atualizar(i);
+                barra.updateBar(i);
                 LctoContabil lcto = lctos.get(i);
                 //--Faz comando de update utilizando dados
                 String sql = comandosSql.updateLcto(lcto);
@@ -85,20 +85,17 @@ public class LctoContabil_Model {
     public void conciliarLctosDaLista(Integer codigoEmpresa, String chavesSeparadasPorVirgula, String conciliacaoTRUEFALSE) {
         try {
             if (!chavesSeparadasPorVirgula.equals("")) {
-                //Começa barra carregamento
-                Carregamento barra = new Carregamento("Conciliando lançamentos no banco", 0, 1);
-
                 //Pega lista de sqls separados pela expressão In
                 List<String> sqls = comandosSql.conciliarChaves(codigoEmpresa, chavesSeparadasPorVirgula, conciliacaoTRUEFALSE);
                 
                 //Atualiza minimo e maximo
-                Carregamento.barra.setMaximum(sqls.size());
-                Carregamento.barra.setMinimum(0);
+                //Começa barra carregamento
+                Loading barra = new Loading("Conciliando lançamentos no banco", 0, sqls.size());
                 
                 //PErcorre todos comandos SQL para executa-los
                 for (int i = 0; i < sqls.size(); i++) {
                     String sql = sqls.get(i);
-                    barra.atualizar(i);
+                    barra.updateBar(i);
                     banco.query(sql);
                 }
                 
@@ -166,9 +163,9 @@ public class LctoContabil_Model {
         String prefixo = "";
         
         //Percorre lctos
-        Carregamento barra = new Carregamento("Zerando Conciliação", 0, lctos.size());
+        Loading barra = new Loading("Zerando Conciliação", 0, lctos.size());
         for (int i = 0; i < lctos.size(); i++) {
-            barra.atualizar(i);
+            barra.updateBar(i);
             LctoContabil lcto = lctos.get(i);
             lcto.setConciliadoDeb(false);
             lcto.setConciliadoCred(false);
