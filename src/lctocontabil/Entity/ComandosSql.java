@@ -33,14 +33,14 @@ public class ComandosSql {
         return whereLctos(codEmpresa, t_Lancamentos.get("col_chave").getString() + " = " + chaveLcto);
     }
 
-    public String updateLcto(LctoContabil lcto) {
+    public String updateLcto(ContabilityEntry lcto) {
         List<CampoSQL> campos = new ArrayList<>();
         campos.add(new CampoSQL(t_Lancamentos.get("col_data").getString(), "=", lcto.getData().getString(), true, false));
         campos.add(new CampoSQL(t_Lancamentos.get("col_planoPadrao").getString(), "=", lcto.getPlanoPadrao().toString(), true, false));
         campos.add(new CampoSQL(t_Lancamentos.get("col_debito").getString(), "=", lcto.getDeb().toString(), true, true));
         campos.add(new CampoSQL(t_Lancamentos.get("col_credito").getString(), "=", lcto.getCred().toString(), true, true));
-        campos.add(new CampoSQL(t_Lancamentos.get("col_participanteDebito").getString(), "=", lcto.getTerceiroDeb().toString(), true, true));
-        campos.add(new CampoSQL(t_Lancamentos.get("col_participanteCredito").getString(), "=", lcto.getTerceiroCred().toString(), true, true));
+        campos.add(new CampoSQL(t_Lancamentos.get("col_participanteDebito").getString(), "=", lcto.getParticipantDebit().toString(), true, true));
+        campos.add(new CampoSQL(t_Lancamentos.get("col_participanteCredito").getString(), "=", lcto.getParticipantCredit().toString(), true, true));
         campos.add(new CampoSQL(t_Lancamentos.get("col_historicoPadrao").getString(), "=", lcto.getHistoricoPadrao().toString(), true, true));
         campos.add(new CampoSQL(t_Lancamentos.get("col_complementoHistorico").getString(), "=", lcto.getComplemento().getString(), true, false));
         campos.add(new CampoSQL(t_Lancamentos.get("col_documento").getString(), "=", lcto.getDocumento().getString(), true, false));
@@ -51,7 +51,7 @@ public class ComandosSql {
         String setCommand = " SET " + CampoSQL.imprimirCampos(campos, " , ");
 
         List<CampoSQL> camposWhere = new ArrayList<>();
-        camposWhere.add(new CampoSQL(t_Lancamentos.get("col_chave").getString(), "=", lcto.getChave().toString(), false, false));
+        camposWhere.add(new CampoSQL(t_Lancamentos.get("col_chave").getString(), "=", lcto.getKey().toString(), false, false));
         camposWhere.add(new CampoSQL(t_Lancamentos.get("col_empresa").getString(), "=", lcto.getCodigoEmpresa().toString(), false, false));
         String whereCommand = " where " + CampoSQL.imprimirCampos(camposWhere, " AND ");
 

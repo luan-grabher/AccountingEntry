@@ -2,8 +2,8 @@ package testes;
 
 import java.util.List;
 import lctocontabil.Entity.ComandosSqlUnico;
-import lctocontabil.Entity.LctoContabil;
-import lctocontabil.Model.LctoContabil_Model;
+import lctocontabil.Entity.ContabilityEntry;
+import lctocontabil.Model.ContabilityEntries_Model;
 
 public class teste {
     private static final String pathBancoSql = "sci.cfg";
@@ -15,10 +15,10 @@ public class teste {
     private static void testeModelComChave(){
         Long chave = (long) 20979;
         
-        LctoContabil_Model modelo = new LctoContabil_Model(new ComandosSqlUnico(), pathBancoSql);
+        ContabilityEntries_Model modelo = new ContabilityEntries_Model(new ComandosSqlUnico(), pathBancoSql);
         modelo.adicionarLancamento(657, chave);
         
-        LctoContabil l = modelo.getLctos().get(0);
+        ContabilityEntry l = modelo.getLctos().get(0);
         l.setConciliadoDeb(true);
         l.setConciliadoCred(true);
         
@@ -34,11 +34,11 @@ public class teste {
         String filtroLctos = "";
 
         
-        LctoContabil_Model modelo = new LctoContabil_Model(new ComandosSqlUnico(), pathBancoSql);
+        ContabilityEntries_Model modelo = new ContabilityEntries_Model(new ComandosSqlUnico(), pathBancoSql);
 
         modelo.definirLancamentos(filtroLctos, codEmpresa, dataInicio, dataFinal, contaCTB);
         //modelo.fazerUpdateNoBanco();
-        List<LctoContabil> l = modelo.getLctos();
+        List<ContabilityEntry> l = modelo.getLctos();
         
         System.out.println("sss");
     }
