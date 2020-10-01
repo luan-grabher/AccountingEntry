@@ -1,0 +1,6 @@
+SELECT
+*
+FROM VSUC_EMPRESAS_TLAN L
+WHERE
+BDCODEMP = :enterprise
+AND BDDATA >= ':dateStart' AND BDDATA <= ':dateEnd'

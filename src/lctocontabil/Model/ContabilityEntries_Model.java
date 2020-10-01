@@ -5,11 +5,14 @@ import SimpleView.Loading;
 import fileManager.FileManager;
 import java.sql.ResultSet;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import lctocontabil.Entity.ContabilityEntry;
 import org.ini4j.Ini;
 import sql.Database;
+import sql.SQL;
 
 /**
  * Antes de utilizar as funcoes, defina o ini e o db, o db já está definido como
@@ -17,11 +20,12 @@ import sql.Database;
  */
 public class ContabilityEntries_Model {
 
-    private static Database db = Database.getDatabase();
-    public static Ini ini = null;
+    private Database db = Database.getDatabase();
+    public Ini ini = null;
 
     /**
      * O banco estatico e o INI já devem estar definidos de forma estática
+     * através das funções desta Classe 'setDb' e 'setIni'
      */
     public ContabilityEntries_Model() {
     }
@@ -31,8 +35,8 @@ public class ContabilityEntries_Model {
      *
      * @param db O banco de dados que será definido
      */
-    public static void setDb(Database db) {
-        ContabilityEntries_Model.db = db;
+    public void setDb(Database db) {
+        this.db = db;
     }
 
     /**
@@ -40,12 +44,14 @@ public class ContabilityEntries_Model {
      *
      * @param ini A classe ini do arquivo Ini
      */
-    public static void setIni(Ini ini) {
-        ContabilityEntries_Model.ini = ini;
+    public void setIni(Ini ini) {
+        this.ini = ini;
     }
 
     /**
-     * Pega os lançamentos desse SQL e dessas trocas
+     * Cria um mapa de classes de lançamentos contábeis a partir de um código
+     * SQL da tabela de lançamentos. As colunas devem ser "*", o código busca
+     * pelo próprio nome das colunas.
      *
      * @param sql Script SQL com código select
      * @param swaps mapa de trocas com variaveis e valores
@@ -61,10 +67,6 @@ public class ContabilityEntries_Model {
             while (rs.next()) {
                 ContabilityEntry entry = new ContabilityEntry();
 
-                /*
-                t_Lancamentos.add(new Valor("BDCONCD", "col_conciliadoDebito"));
-                t_Lancamentos.add(new Valor("BDCONCC", "col_conciliadoCredito"));
-                 */
                 entry.setKey(rs.getInt("BDCHAVE"));
                 entry.setEnterprise(rs.getInt("BDCODEMP"));
 
@@ -95,7 +97,9 @@ public class ContabilityEntries_Model {
     }
 
     /**
-     * Realiza update no banco dos lançamentos da lista
+     * Realiza update no banco usando o arquivo sql
+     * "sql\\updateContabilityEntriesOnDatabase.sql" com os lançamentos do mapa
+     * informado
      *
      * @param entries Mapa de lançamentos
      * @return Retorna true se ocorrer tudo Ok
@@ -108,8 +112,8 @@ public class ContabilityEntries_Model {
             int count = 0;
 
             for (Map.Entry<Integer, ContabilityEntry> entry : entries.entrySet()) {
+                //Atualiza barra de carregamento
                 count++;
-
                 loading.updateBar(count + " de " + entries.size(), count);
 
                 Integer key = entry.getKey();
@@ -131,6 +135,7 @@ public class ContabilityEntries_Model {
                 swaps.put("conciliedCredit", e.getConciliedCredit().toString());
                 swaps.put("conciliedDebit", e.getConciliedDebit().toString());
 
+                //Se ocorrer algum erro ao fazer o update, para o código
                 if (!db.query(sqlUpdateContabilityEntriesOnDatabase, swaps)) {
                     return false;
                 }
@@ -138,7 +143,7 @@ public class ContabilityEntries_Model {
 
             return true;
         } catch (Exception e) {
-            System.out.println("[LctoContabil_Model] Erro ao fazer update no banco: " + e);
+            System.out.println("[ContabilityEntries_Model] Erro ao fazer update no banco: " + e);
             e.printStackTrace();
         }
 
@@ -146,17 +151,44 @@ public class ContabilityEntries_Model {
     }
 
     /**
-     * Conciliar lançamentos da lista
+     * Define os atributos 'conciliadoCredito' e 'conciliadoDebito' do mapa
+     * informado com o valor booleano informado
      *
      * @param entries Mapa dos lançamentos
-     * @param conciliated Se o débito e o crédito serão conciliados ou não.
+     * @param concilited Valor booleano com TRUE para 'conciliado' e FALSE para
+     * 'não conciliado'
      */
-    public void defineConciliatedsTo(Map<Integer, ContabilityEntry> entries, Boolean conciliated) {
+    public void defineConciliatedsTo(Map<Integer, ContabilityEntry> entries, Boolean concilited) {
         for (Map.Entry<Integer, ContabilityEntry> entry : entries.entrySet()) {
             ContabilityEntry e = entry.getValue();
 
-            e.setConciliedCredit(conciliated);
-            e.setConciliedDebit(conciliated);
+            e.setConciliedCredit(concilited);
+            e.setConciliedDebit(concilited);
         }
+    }
+
+    /**
+     * Concilia no banco de dados a lista de chaves da empresa informada
+     * conforme o valor booleano informado
+     *
+     * @param enterprise Código da empresa no único
+     * @param keys Lista de chaves que serão conciliadas em formato de texto
+     * separadas por ,
+     * @param concilited TRUE para conciliar e FALSE para desconciliar
+     * @return Retorna TRUE se conseguir executar a query e FALSE se não
+     * conseguir
+     */
+    public boolean conciliateKeysOnDatabase(Integer enterprise, String keys, Boolean concilited) {
+        String whereIn = SQL.divideIn(keys, "BDCHAVE");
+
+        String sql = FileManager.getText(FileManager.getFile("sql\\conciliateKeys.sql"));
+
+        Map<String, String> swaps = new HashMap<>();
+        swaps.put("keysInList", whereIn);
+        swaps.put("enterprise", enterprise.toString());
+        swaps.put("concilited", concilited.toString());
+
+        /*Se conseguir fazer a query retorna TRUE*/
+        return db.query(sql, swaps);
     }
 }
