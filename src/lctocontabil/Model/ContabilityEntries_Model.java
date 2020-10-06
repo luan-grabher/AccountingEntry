@@ -3,6 +3,7 @@ package lctocontabil.Model;
 import Dates.Dates;
 import SimpleView.Loading;
 import fileManager.FileManager;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -22,6 +23,11 @@ public class ContabilityEntries_Model {
 
     private Database db = Database.getDatabase();
     public Ini ini = null;
+
+    /*SQLs*/
+    private String sql_conciliateKeys = FileManager.getText(FileManager.getFile("sql\\conciliateKeys.sql"));
+    private String sql_updateContabilityEntriesOnDatabase = FileManager.getText(FileManager.getFile("sql\\updateContabilityEntriesOnDatabase.sql"));
+    private String sql_selectAccountBalance = FileManager.getText(FileManager.getFile("sql\\selectAccountBalance.sql"));
 
     /**
      * O banco estatico e o INI já devem estar definidos de forma estática
@@ -106,7 +112,6 @@ public class ContabilityEntries_Model {
      */
     public boolean updateContabilityEntriesOnDatabase(Map<Integer, ContabilityEntry> entries) {
         try {
-            String sqlUpdateContabilityEntriesOnDatabase = FileManager.getText(FileManager.getFile("sql\\updateContabilityEntriesOnDatabase.sql"));
 
             Loading loading = new Loading("Atualizando lançamentos do banco", 0, entries.size());
             int count = 0;
@@ -136,7 +141,7 @@ public class ContabilityEntries_Model {
                 swaps.put("conciliedDebit", e.getConciliedDebit().toString());
 
                 //Se ocorrer algum erro ao fazer o update, para o código
-                if (!db.query(sqlUpdateContabilityEntriesOnDatabase, swaps)) {
+                if (!db.query(sql_updateContabilityEntriesOnDatabase, swaps)) {
                     return false;
                 }
             }
@@ -181,14 +186,52 @@ public class ContabilityEntries_Model {
     public boolean conciliateKeysOnDatabase(Integer enterprise, String keys, Boolean concilited) {
         String whereIn = SQL.divideIn(keys, "BDCHAVE");
 
-        String sql = FileManager.getText(FileManager.getFile("sql\\conciliateKeys.sql"));
-
         Map<String, String> swaps = new HashMap<>();
         swaps.put("keysInList", whereIn);
         swaps.put("enterprise", enterprise.toString());
         swaps.put("concilited", concilited.toString());
 
         /*Se conseguir fazer a query retorna TRUE*/
-        return db.query(sql, swaps);
+        return db.query(sql_conciliateKeys, swaps);
+    }
+
+    /**
+     * Pega Saldo de CREDITO e DEBITO especificamente
+     *
+     * @param enterprise código da empresa
+     * @param account Conta contábil que será retornada o saldo
+     * @param participant Participante que será retornado o saldo, se for nulo
+     * irá retornar o saldo da conta contabil informada com todos os
+     * participantes
+     * @param dateCalendar o saldo será somado até essa data
+     * @return Retorna um mapa com duas chaves "credit" e "debit" com valores
+     * BigDecimal com os valores de crédito e débito respectivamente
+     */
+    public Map<String, BigDecimal> selectAccountBalance(Integer enterprise, Integer account, Integer participant, Calendar dateCalendar) {
+
+        /*Cria trocas*/
+        Map<String, String> swaps = new TreeMap<>();
+        swaps.put("enterprise", enterprise.toString());
+        swaps.put("date", Dates.getCalendarInThisStringFormat(dateCalendar, "yyyy-mm-dd"));
+        swaps.put("account", account.toString());
+        swaps.put("participant", participant.toString());
+
+        ResultSet rs = db.getResultSet(sql_selectAccountBalance, swaps);
+
+        try {
+            BigDecimal credit = rs.getBigDecimal("SALDO");
+
+            rs.next();
+
+            BigDecimal debit = rs.getBigDecimal("SALDO");
+
+            Map<String, BigDecimal> balances = new TreeMap<>();
+            balances.put("credit", credit);
+            balances.put("debit", debit);
+
+            return balances;
+        } catch (Exception e) {
+            throw new Error("Ocorreu um erro ao buscar o saldo da conta '" + account + "' da empresa '" + enterprise + "' até a data '" + Dates.getCalendarInThisStringFormat(dateCalendar, "yyyy-mm-dd") + "'");
+        }
     }
 }
