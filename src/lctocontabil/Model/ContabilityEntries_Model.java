@@ -21,17 +21,16 @@ import sql.SQL;
  */
 public class ContabilityEntries_Model {
 
-    private Database db = Database.getDatabase();
-    public Ini ini = null;
+    private static Database db = Database.getDatabase();
+    public static Ini ini = null;
 
     /*SQLs*/
-    private String sql_conciliateKeys = FileManager.getText(FileManager.getFile("sql\\conciliateKeys.sql"));
-    private String sql_updateContabilityEntriesOnDatabase = FileManager.getText(FileManager.getFile("sql\\updateContabilityEntriesOnDatabase.sql"));
-    private String sql_selectAccountBalance = FileManager.getText(FileManager.getFile("sql\\selectAccountBalance.sql"));
+    private static String sql_conciliateKeys = FileManager.getText(FileManager.getFile("sql\\conciliateKeys.sql"));
+    private static String sql_updateContabilityEntriesOnDatabase = FileManager.getText(FileManager.getFile("sql\\updateContabilityEntriesOnDatabase.sql"));
+    private static String sql_selectAccountBalance = FileManager.getText(FileManager.getFile("sql\\selectAccountBalance.sql"));
 
     /**
-     * O banco estatico e o INI já devem estar definidos de forma estática
-     * através das funções desta Classe 'setDb' e 'setIni'
+     * AS FUNÇÕES SÃO ESTÁTICAS, NÃO INSTANCIAR
      */
     public ContabilityEntries_Model() {
     }
@@ -39,19 +38,19 @@ public class ContabilityEntries_Model {
     /**
      * Reseta o banco de dados
      *
-     * @param db O banco de dados que será definido
+     * @param newdb O banco de dados que será definido
      */
-    public void setDb(Database db) {
-        this.db = db;
+    public static void setDb(Database newdb) {
+        db = newdb;
     }
 
     /**
      * Resetar o banco e ini file
      *
-     * @param ini A classe ini do arquivo Ini
+     * @param newini A classe ini do arquivo Ini
      */
-    public void setIni(Ini ini) {
-        this.ini = ini;
+    public static void setIni(Ini newini) {
+        ini = newini;
     }
 
     /**
@@ -63,7 +62,7 @@ public class ContabilityEntries_Model {
      * @param swaps mapa de trocas com variaveis e valores
      * @return Mapa de lançamentos com a chave como a key dos maps
      */
-    public Map<Integer, ContabilityEntry> getEntries(String sql, Map<String, String> swaps) {
+    public static Map<Integer, ContabilityEntry> getEntries(String sql, Map<String, String> swaps) {
         Map<Integer, ContabilityEntry> entries = new TreeMap<>();
 
         ResultSet rs = db.getResultSet(sql, swaps);
@@ -110,7 +109,7 @@ public class ContabilityEntries_Model {
      * @param entries Mapa de lançamentos
      * @return Retorna true se ocorrer tudo Ok
      */
-    public boolean updateContabilityEntriesOnDatabase(Map<Integer, ContabilityEntry> entries) {
+    public static boolean updateContabilityEntriesOnDatabase(Map<Integer, ContabilityEntry> entries) {
         try {
 
             Loading loading = new Loading("Atualizando lançamentos do banco", 0, entries.size());
@@ -163,7 +162,7 @@ public class ContabilityEntries_Model {
      * @param concilited Valor booleano com TRUE para 'conciliado' e FALSE para
      * 'não conciliado'
      */
-    public void defineConciliatedsTo(Map<Integer, ContabilityEntry> entries, Boolean concilited) {
+    public static void defineConciliatedsTo(Map<Integer, ContabilityEntry> entries, Boolean concilited) {
         for (Map.Entry<Integer, ContabilityEntry> entry : entries.entrySet()) {
             ContabilityEntry e = entry.getValue();
 
@@ -183,7 +182,7 @@ public class ContabilityEntries_Model {
      * @return Retorna TRUE se conseguir executar a query e FALSE se não
      * conseguir
      */
-    public boolean conciliateKeysOnDatabase(Integer enterprise, String keys, Boolean concilited) {
+    public static boolean conciliateKeysOnDatabase(Integer enterprise, String keys, Boolean concilited) {
         String whereIn = SQL.divideIn(keys, "BDCHAVE");
 
         Map<String, String> swaps = new HashMap<>();
@@ -208,7 +207,7 @@ public class ContabilityEntries_Model {
      * @return Retorna um mapa com duas chaves "credit" e "debit" com os valores
      * BigDecimal com os valores de crédito e débito respectivamente
      */
-    public Map<String, BigDecimal> selectAccountBalance(Integer enterprise, Integer account, Integer participant, Calendar dateCalendar) {
+    public static Map<String, BigDecimal> selectAccountBalance(Integer enterprise, Integer account, Integer participant, Calendar dateCalendar) {
 
         /*Cria trocas*/
         Map<String, String> swaps = new TreeMap<>();
