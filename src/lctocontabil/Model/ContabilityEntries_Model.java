@@ -196,15 +196,16 @@ public class ContabilityEntries_Model {
     }
 
     /**
-     * Pega Saldo de CREDITO e DEBITO especificamente
-     *
+     * Pega Saldo de CREDITO e DEBITO de uma conta ou participante em uma data
+     * diretamente do banco.
+     *     
      * @param enterprise código da empresa
      * @param account Conta contábil que será retornada o saldo
      * @param participant Participante que será retornado o saldo, se for nulo
      * irá retornar o saldo da conta contabil informada com todos os
      * participantes
      * @param dateCalendar o saldo será somado até essa data
-     * @return Retorna um mapa com duas chaves "credit" e "debit" com valores
+     * @return Retorna um mapa com duas chaves "credit" e "debit" com os valores
      * BigDecimal com os valores de crédito e débito respectivamente
      */
     public Map<String, BigDecimal> selectAccountBalance(Integer enterprise, Integer account, Integer participant, Calendar dateCalendar) {
@@ -212,18 +213,19 @@ public class ContabilityEntries_Model {
         /*Cria trocas*/
         Map<String, String> swaps = new TreeMap<>();
         swaps.put("enterprise", enterprise.toString());
-        swaps.put("date", Dates.getCalendarInThisStringFormat(dateCalendar, "yyyy-mm-dd"));
+        swaps.put("date", Dates.getCalendarInThisStringFormat(dateCalendar, "YYYY-MM-dd"));
         swaps.put("account", account.toString());
-        swaps.put("participant", participant.toString());
-
-        ResultSet rs = db.getResultSet(sql_selectAccountBalance, swaps);
+        swaps.put("participant", participant == null ? "NULL" : participant.toString());
+        
+        List<Map<String,Object>> results = db.getMap(sql_selectAccountBalance,swaps);
 
         try {
-            BigDecimal credit = rs.getBigDecimal("SALDO");
-
-            rs.next();
-
-            BigDecimal debit = rs.getBigDecimal("SALDO");
+            //Se não retornar nada, dá erro
+            if(results.isEmpty())
+                throw new Error("");
+            
+            BigDecimal credit = new BigDecimal(results.get(0).get("SALDO").toString());
+            BigDecimal debit = new BigDecimal(results.get(1).get("SALDO").toString());
 
             Map<String, BigDecimal> balances = new TreeMap<>();
             balances.put("credit", credit);
@@ -231,7 +233,8 @@ public class ContabilityEntries_Model {
 
             return balances;
         } catch (Exception e) {
-            throw new Error("Ocorreu um erro ao buscar o saldo da conta '" + account + "' da empresa '" + enterprise + "' até a data '" + Dates.getCalendarInThisStringFormat(dateCalendar, "yyyy-mm-dd") + "'");
+            e.printStackTrace();
+            throw new Error("Ocorreu um erro ao buscar o saldo da conta '" + account + "' da empresa '" + enterprise + "' até a data '" + Dates.getCalendarInThisStringFormat(dateCalendar, "YYYY-MM-dd") + "'");
         }
     }
 }
