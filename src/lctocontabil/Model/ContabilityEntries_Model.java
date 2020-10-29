@@ -273,7 +273,7 @@ public class ContabilityEntries_Model {
      * 
      * @return Retorna lista de lançamentos anteriores a data
      */
-    public static Long getEntriesListBeforeDate(Calendar date, Integer enterprise, Integer account, Integer participant) {
+    public static String getEntriesListBeforeDate(Calendar date, Integer enterprise, Integer account, Integer participant) {
         /*Cria trocas*/
         Map<String, String> swaps = new TreeMap<>();
         swaps.put("enterprise", enterprise.toString());
@@ -283,6 +283,6 @@ public class ContabilityEntries_Model {
 
         List<Map<String, Object>> results = db.getMap(sql_selectEntriesListBeforeDate, swaps);
         
-        return Long.valueOf(results.get(0).get("LIST").toString());
+        return results.get(0).get("LIST").toString();
     }
 }
