@@ -1,5 +1,8 @@
 package testes;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*
 import fileManager.FileManager;
 import java.math.BigDecimal;
@@ -12,22 +15,12 @@ public class teste {
 
     public static void main(String[] args) {
         
-        String str = "assd 556 asfasf 12746279 JHKJ 24114 55";
+        Map<Integer, Integer> map = new HashMap<>();
         
-        // [][2345][2323]
-        // [12123][232]
-        // [21321][21312][234]
-
-        String[] numbers = str.split("[^0-9]+");
-        String number = "";
-        for (String number1 : numbers) {
-            if(!number1.equals("")){
-                number = number1;
-                break;
-            }
-        }
+        map.put(1,1);
+        map.put(null, null);
         
-        System.out.println(number);
+        System.out.println("ss");
         
         /*
         Database.setStaticObject(new Database(FileManager.getFile("sci.cfg")));

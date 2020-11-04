@@ -21,6 +21,10 @@ public class ContabilityEntry {
 
     private Boolean conciliedDebit = false;
     private Boolean conciliedCredit = false;
+    
+    public ContabilityEntry getObject(){
+        return this;
+    }
 
     public Integer getKey() {
         return key;
