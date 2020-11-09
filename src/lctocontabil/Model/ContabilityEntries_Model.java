@@ -25,11 +25,11 @@ public class ContabilityEntries_Model {
     public static Ini ini = null;
 
     /*SQLs*/
-    private static String sql_conciliateKeys = FileManager.getText(FileManager.getFile("sql\\conciliateKeys.sql"));
-    private static String sql_updateContabilityEntriesOnDatabase = FileManager.getText(FileManager.getFile("sql\\updateContabilityEntriesOnDatabase.sql"));
-    private static String sql_selectAccountBalance = FileManager.getText(FileManager.getFile("sql\\selectAccountBalance.sql"));
-    private static String sql_getEntriesCountBeforeDate = FileManager.getText(FileManager.getFile("sql\\getEntriesCountBeforeDate.sql"));
-    private static String sql_selectEntriesListBeforeDate = FileManager.getText(FileManager.getFile("sql\\selectEntriesBeforeDate.sql"));
+    private static final String sql_conciliateKeys = FileManager.getText(FileManager.getFile("sql\\conciliateKeys.sql"));
+    private static final String sql_updateContabilityEntriesOnDatabase = FileManager.getText(FileManager.getFile("sql\\updateContabilityEntriesOnDatabase.sql"));
+    private static final String sql_selectAccountBalance = FileManager.getText(FileManager.getFile("sql\\selectAccountBalance.sql"));
+    private static final String sql_getEntriesCountBeforeDate = FileManager.getText(FileManager.getFile("sql\\getEntriesCountBeforeDate.sql"));
+    private static final String sql_selectEntriesListBeforeDate = FileManager.getText(FileManager.getFile("sql\\selectContabilityEntriesBeforeDate.sql"));
 
     /**
      * AS FUNÇÕES SÃO ESTÁTICAS, NÃO INSTANCIAR
