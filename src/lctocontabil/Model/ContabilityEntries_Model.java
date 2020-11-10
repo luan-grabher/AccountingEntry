@@ -130,10 +130,10 @@ public class ContabilityEntries_Model {
                 swaps.put("enterprise", e.getEnterprise().toString());
                 swaps.put("date", Dates.getCalendarInThisStringFormat(e.getDate(), "YYYY-MM-dd"));
                 swaps.put("defaultPlan", e.getDefaultPlan().toString());
-                swaps.put("accountDebit", e.getAccountDebit().toString());
-                swaps.put("accountCredit", e.getAccountCredit().toString());
-                swaps.put("participantDebit", e.getParticipantDebit().toString());
-                swaps.put("participantCredit", e.getParticipantCredit().toString());
+                swaps.put("accountDebit", e.getAccountDebit() == null ? "NULL" : e.getAccountDebit().toString());
+                swaps.put("accountCredit", e.getAccountCredit() == null ? "NULL" : e.getAccountCredit().toString());
+                swaps.put("participantDebit",e.getParticipantDebit() == null ? "NULL" : e.getParticipantDebit().toString());
+                swaps.put("participantCredit",e.getParticipantCredit() == null ? "NULL" : e.getParticipantCredit().toString());
                 swaps.put("historyCode", e.getHistoryCode().toString());
                 swaps.put("complement", e.getComplement());
                 swaps.put("document", e.getDocument());
@@ -190,7 +190,7 @@ public class ContabilityEntries_Model {
         Map<String, String> swaps = new HashMap<>();
         swaps.put("keysInList", whereIn);
         swaps.put("enterprise", enterprise.toString());
-        swaps.put("concilited", concilited.toString());
+        swaps.put("concilited", "'" + concilited.toString().toUpperCase() + "'");
 
         /*Se conseguir fazer a query retorna TRUE*/
         return db.query(sql_conciliateKeys, swaps);
@@ -223,22 +223,21 @@ public class ContabilityEntries_Model {
         try {
             BigDecimal credit;
             BigDecimal debit;
-            
-            
+
             //Se não retornar débito e credito, retorna saldos, mas zerados
             if (results.size() != 2) {
                 credit = new BigDecimal("0.00");
                 debit = new BigDecimal("0.00");
-            }else{
-                credit = new BigDecimal(results.get(0).get("SALDO") == null?"0.00":results.get(0).get("SALDO").toString());
-                debit = new BigDecimal(results.get(1).get("SALDO") == null?"0.00":results.get(1).get("SALDO").toString());
+            } else {
+                credit = new BigDecimal(results.get(0).get("SALDO") == null ? "0.00" : results.get(0).get("SALDO").toString());
+                debit = new BigDecimal(results.get(1).get("SALDO") == null ? "0.00" : results.get(1).get("SALDO").toString());
             }
-            
+
             Map<String, BigDecimal> balances = new TreeMap<>();
             balances.put("credit", credit);
             balances.put("debit", debit);
 
-            return balances;            
+            return balances;
         } catch (Exception e) {
             e.printStackTrace();
             throw new Error("Ocorreu um erro ao buscar o saldo da conta '" + account + "' da empresa '" + enterprise + "' até a data '" + Dates.getCalendarInThisStringFormat(dateCalendar, "YYYY-MM-dd") + "'");
@@ -252,7 +251,7 @@ public class ContabilityEntries_Model {
      * @param enterprise número da empresa no único
      * @param account Conta contábil
      * @param participant Número do participante, se não tiver deve ficar nulo
-     * 
+     *
      * @return Retorna o número de lançamentos anteriores a data
      */
     public static Long getEntriesCountBeforeDate(Calendar date, Integer enterprise, Integer account, Integer participant) {
@@ -264,10 +263,10 @@ public class ContabilityEntries_Model {
         swaps.put("participant", participant == null ? "NULL" : participant.toString());
 
         List<Map<String, Object>> results = db.getMap(sql_getEntriesCountBeforeDate, swaps);
-        
+
         return Long.valueOf(results.get(0).get("COUNT").toString());
     }
-    
+
     /**
      * Retorna lista de lançamentos antes da data informada
      *
@@ -275,7 +274,7 @@ public class ContabilityEntries_Model {
      * @param enterprise número da empresa no único
      * @param account Conta contábil
      * @param participant Número do participante, se não tiver deve ficar nulo
-     * 
+     *
      * @return Retorna lista de lançamentos anteriores a data
      */
     public static String getEntriesListBeforeDate(Calendar date, Integer enterprise, Integer account, Integer participant) {
@@ -287,7 +286,7 @@ public class ContabilityEntries_Model {
         swaps.put("participant", participant == null ? "NULL" : participant.toString());
 
         List<Map<String, Object>> results = db.getMap(sql_selectEntriesListBeforeDate, swaps);
-        
+
         return results.get(0).get("LIST").toString();
     }
 }
