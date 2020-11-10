@@ -221,19 +221,24 @@ public class ContabilityEntries_Model {
         List<Map<String, Object>> results = db.getMap(sql_selectAccountBalance, swaps);
 
         try {
-            //Se não retornar nada, dá erro
-            if (results.isEmpty()) {
-                throw new Error("");
+            BigDecimal credit;
+            BigDecimal debit;
+            
+            
+            //Se não retornar débito e credito, retorna saldos, mas zerados
+            if (results.size() != 2) {
+                credit = new BigDecimal("0.00");
+                debit = new BigDecimal("0.00");
+            }else{
+                credit = new BigDecimal(results.get(0).get("SALDO") == null?"0.00":results.get(0).get("SALDO").toString());
+                debit = new BigDecimal(results.get(1).get("SALDO") == null?"0.00":results.get(1).get("SALDO").toString());
             }
-
-            BigDecimal credit = new BigDecimal(results.get(0).get("SALDO").toString());
-            BigDecimal debit = new BigDecimal(results.get(1).get("SALDO").toString());
-
+            
             Map<String, BigDecimal> balances = new TreeMap<>();
             balances.put("credit", credit);
             balances.put("debit", debit);
 
-            return balances;
+            return balances;            
         } catch (Exception e) {
             e.printStackTrace();
             throw new Error("Ocorreu um erro ao buscar o saldo da conta '" + account + "' da empresa '" + enterprise + "' até a data '" + Dates.getCalendarInThisStringFormat(dateCalendar, "YYYY-MM-dd") + "'");
