@@ -138,8 +138,8 @@ public class ContabilityEntries_Model {
                 swaps.put("complement", e.getComplement());
                 swaps.put("document", e.getDocument());
                 swaps.put("value", e.getValue().toPlainString());
-                swaps.put("conciliedCredit", e.getConciliedCredit().toString());
-                swaps.put("conciliedDebit", e.getConciliedDebit().toString());
+                swaps.put("conciliedCredit", "'" + e.getConciliedCredit().toString().toUpperCase() + "'");
+                swaps.put("conciliedDebit", "'" + e.getConciliedDebit().toString().toUpperCase() + "'");
 
                 //Se ocorrer algum erro ao fazer o update, para o código
                 if (!db.query(sql_updateContabilityEntriesOnDatabase, swaps)) {
