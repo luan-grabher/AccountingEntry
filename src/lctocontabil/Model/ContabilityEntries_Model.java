@@ -261,7 +261,7 @@ public class ContabilityEntries_Model {
         swaps.put("enterprise", enterprise.toString());
         swaps.put("date", Dates.getCalendarInThisStringFormat(date, "YYYY-MM-dd"));
         swaps.put("account", account.toString());
-        swaps.put("conciled", conciled == null? "NULL": conciled.toString());
+        swaps.put("conciled", conciled.equals(Boolean.TRUE)?"=":"<>");
         swaps.put("participant", participant == null ? "NULL" : participant.toString());
 
         List<Map<String, Object>> results = db.getMap(sql_getEntriesCountBeforeDate, swaps);
@@ -286,7 +286,7 @@ public class ContabilityEntries_Model {
         swaps.put("enterprise", enterprise.toString());
         swaps.put("date", Dates.getCalendarInThisStringFormat(date, "YYYY-MM-dd"));
         swaps.put("account", account.toString());
-        swaps.put("conciled", conciled == null? "NULL": conciled.toString());
+        swaps.put("conciled", conciled.equals(Boolean.TRUE)?"=":"<>");
         swaps.put("participant", participant == null ? "NULL" : participant.toString());
 
         List<Map<String, Object>> results = db.getMap(sql_selectEntriesListBeforeDate, swaps);
