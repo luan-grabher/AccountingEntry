@@ -176,4 +176,12 @@ public class ContabilityEntry {
     public Boolean isConciliated() {
         return conciliedCredit || conciliedDebit;
     }
+    
+    /**
+     * Retorna se o lançamento tem o participante no debito ou credito
+     * @param participant Codigo participante
+     */
+    public Boolean isParticipant(Integer participant){
+        return participant.equals(participantCredit) || participant.equals(participantDebit);
+    }
 }
