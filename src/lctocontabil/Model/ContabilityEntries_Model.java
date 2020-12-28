@@ -261,6 +261,7 @@ public class ContabilityEntries_Model {
         swaps.put("enterprise", enterprise.toString());
         swaps.put("date", Dates.getCalendarInThisStringFormat(date, "YYYY-MM-dd"));
         swaps.put("account", account.toString());
+        swaps.put("conciled", conciled == null? "NULL": conciled.toString());
         swaps.put("participant", participant == null ? "NULL" : participant.toString());
 
         List<Map<String, Object>> results = db.getMap(sql_getEntriesCountBeforeDate, swaps);
@@ -274,16 +275,18 @@ public class ContabilityEntries_Model {
      * @param date Data limite que busca os lançamentos
      * @param enterprise número da empresa no único
      * @param account Conta contábil
+     * @param conciled  Se está conciliado ou não, deixe nulo para filtrar todos
      * @param participant Número do participante, se não tiver deve ficar nulo
      *
      * @return Retorna lista de lançamentos anteriores a data
      */
-    public static String getEntriesListBeforeDate(Calendar date, Integer enterprise, Integer account, Integer participant) {
+    public static String getEntriesListBeforeDate(Calendar date, Integer enterprise, Integer account,Boolean conciled, Integer participant) {
         /*Cria trocas*/
         Map<String, String> swaps = new TreeMap<>();
         swaps.put("enterprise", enterprise.toString());
         swaps.put("date", Dates.getCalendarInThisStringFormat(date, "YYYY-MM-dd"));
         swaps.put("account", account.toString());
+        swaps.put("conciled", conciled == null? "NULL": conciled.toString());
         swaps.put("participant", participant == null ? "NULL" : participant.toString());
 
         List<Map<String, Object>> results = db.getMap(sql_selectEntriesListBeforeDate, swaps);
