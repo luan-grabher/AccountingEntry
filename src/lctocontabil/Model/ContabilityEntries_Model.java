@@ -250,11 +250,12 @@ public class ContabilityEntries_Model {
      * @param date Data limite que busca os lançamentos
      * @param enterprise número da empresa no único
      * @param account Conta contábil
+     * @param conciled  Se está conciliado ou não, deixe nulo para filtrar todos
      * @param participant Número do participante, se não tiver deve ficar nulo
      *
      * @return Retorna o número de lançamentos anteriores a data
      */
-    public static Long getEntriesCountBeforeDate(Calendar date, Integer enterprise, Integer account, Integer participant) {
+    public static Long getEntriesCountBeforeDate(Calendar date, Integer enterprise, Integer account,Boolean conciled, Integer participant) {
         /*Cria trocas*/
         Map<String, String> swaps = new TreeMap<>();
         swaps.put("enterprise", enterprise.toString());
