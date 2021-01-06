@@ -130,10 +130,10 @@ public class ContabilityEntries_Model {
                 swaps.put("enterprise", e.getEnterprise().toString());
                 swaps.put("date", Dates.getCalendarInThisStringFormat(e.getDate(), "YYYY-MM-dd"));
                 swaps.put("defaultPlan", e.getDefaultPlan().toString());
-                swaps.put("accountDebit", e.getAccountDebit() == null ? "NULL" : e.getAccountDebit().toString());
-                swaps.put("accountCredit", e.getAccountCredit() == null ? "NULL" : e.getAccountCredit().toString());
-                swaps.put("participantDebit",e.getParticipantDebit() == null ? "NULL" : e.getParticipantDebit().toString());
-                swaps.put("participantCredit",e.getParticipantCredit() == null ? "NULL" : e.getParticipantCredit().toString());
+                swaps.put("accountDebit", e.getAccountDebit() == 0 ? "NULL" : e.getAccountDebit().toString());
+                swaps.put("accountCredit", e.getAccountCredit() == 0 ? "NULL" : e.getAccountCredit().toString());
+                swaps.put("participantDebit",e.getParticipantDebit() == 0 ? "NULL" : e.getParticipantDebit().toString());
+                swaps.put("participantCredit",e.getParticipantCredit() == 0 ? "NULL" : e.getParticipantCredit().toString());
                 swaps.put("historyCode", e.getHistoryCode().toString());
                 swaps.put("complement", e.getComplement());
                 swaps.put("document", e.getDocument());
