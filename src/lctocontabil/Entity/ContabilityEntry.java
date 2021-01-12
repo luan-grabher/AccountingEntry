@@ -116,7 +116,11 @@ public class ContabilityEntry {
     }
 
     public String getComplement() {
-        return complement.substring(0, 201);
+        if(complement.length()>200){
+            return complement.substring(0, 201);
+        }else{
+            return complement;
+        }
     }
 
     public void setComplement(String complement) {
@@ -124,7 +128,11 @@ public class ContabilityEntry {
     }
 
     public String getDocument() {
-        return document.substring(0, 16);
+        if(complement.length()>15){
+            return document.substring(0, 16);
+        }else{
+            return document;
+        }
     }
 
     public void setDocument(String document) {
