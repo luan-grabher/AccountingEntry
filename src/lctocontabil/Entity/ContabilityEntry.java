@@ -128,7 +128,7 @@ public class ContabilityEntry {
     }
 
     public String getDocument() {
-        if(complement.length()>15){
+        if(document.length()>15){
             return document.substring(0, 16);
         }else{
             return document;
