@@ -118,6 +118,9 @@ public class ContabilityEntry {
     }
 
     public void setComplement(String complement) {
+        //apaga caracteres ruins
+        complement = complement.replaceAll("\\$", "S");
+        complement = complement.replaceAll("[^a-zA-Z0-9 \\/\\\\]+", " ");
         this.complement = complement;
     }
 
