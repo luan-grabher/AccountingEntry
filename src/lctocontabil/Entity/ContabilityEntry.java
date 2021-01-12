@@ -1,7 +1,9 @@
 package lctocontabil.Entity;
 
 import java.math.BigDecimal;
+import java.text.Normalizer;
 import java.util.Calendar;
+import java.util.regex.Pattern;
 
 public class ContabilityEntry {
 
@@ -21,8 +23,8 @@ public class ContabilityEntry {
 
     private Boolean conciliedDebit = false;
     private Boolean conciliedCredit = false;
-    
-    public ContabilityEntry getObject(){
+
+    public ContabilityEntry getObject() {
         return this;
     }
 
@@ -118,10 +120,7 @@ public class ContabilityEntry {
     }
 
     public void setComplement(String complement) {
-        //apaga caracteres ruins
-        complement = complement.replaceAll("\\$", "S");
-        complement = complement.replaceAll("[^a-zA-Z0-9 \\/\\\\]+", " ");
-        this.complement = complement;
+        this.complement = normalizeString(complement);
     }
 
     public String getDocument() {
@@ -129,10 +128,17 @@ public class ContabilityEntry {
     }
 
     public void setDocument(String document) {
-        //apaga caracteres ruins
-        document = document.replaceAll("\\$", "S");
-        document = document.replaceAll("[^a-zA-Z0-9 \\/\\\\]+", " ");
-        this.document = document;
+        this.document = normalizeString(document);
+    }
+
+    public String normalizeString(String str) {
+        String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        str = pattern.matcher(nfdNormalizedString).replaceAll("");
+        str = str.replaceAll("\\$", "S");
+        str = str.replaceAll("[^a-zA-Z0-9 \\/\\\\]+", " ");
+        str = str.replaceAll(" +", " ");
+        return str;
     }
 
     public BigDecimal getValue() {
@@ -177,17 +183,19 @@ public class ContabilityEntry {
 
     /**
      * Retorna se está conciliado no débito ou no crédito
+     *
      * @return Retorna se está conciliado no débito ou no crédito
      */
     public Boolean isConciliated() {
         return conciliedCredit || conciliedDebit;
     }
-    
+
     /**
      * Retorna se o lançamento tem o participante no debito ou credito
+     *
      * @param participant Codigo participante
      */
-    public Boolean isParticipant(Integer participant){
+    public Boolean isParticipant(Integer participant) {
         return participant.equals(participantCredit) || participant.equals(participantDebit);
     }
 }
