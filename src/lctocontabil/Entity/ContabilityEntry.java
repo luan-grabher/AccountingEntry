@@ -128,7 +128,12 @@ public class ContabilityEntry {
     }
 
     public void setDocument(String document) {
-        this.document = normalizeString(document);
+        document = normalizeString(document);
+        try {
+            this.document = Long.valueOf(document).toString();
+        } catch (Exception e) {
+            this.document = document;
+        }                
     }
 
     public String normalizeString(String str) {
