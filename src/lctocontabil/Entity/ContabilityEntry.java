@@ -126,6 +126,9 @@ public class ContabilityEntry {
     }
 
     public void setDocument(String document) {
+        //apaga caracteres ruins
+        document = document.replaceAll("\\$", "S");
+        document = document.replaceAll("[^a-zA-Z0-9 \\/\\\\]+", " ");
         this.document = document;
     }
 
