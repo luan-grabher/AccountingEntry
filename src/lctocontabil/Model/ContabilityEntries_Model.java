@@ -127,7 +127,7 @@ public class ContabilityEntries_Model {
             Map<String, String> swaps = new TreeMap<>();
             swaps.put("key", e.getKey().toString());
             swaps.put("enterprise", e.getEnterprise().toString());
-            swaps.put("date", Dates.getCalendarInThisStringFormat(e.getDate(), "YYYY-MM-dd"));
+            swaps.put("date", Dates.getCalendarInThisStringFormat(e.getDate(), "yyyy-MM-dd"));
             swaps.put("defaultPlan", e.getDefaultPlan().toString());
             swaps.put("accountDebit", e.getAccountDebit() == 0 ? "NULL" : e.getAccountDebit().toString());
             swaps.put("accountCredit", e.getAccountCredit() == 0 ? "NULL" : e.getAccountCredit().toString());
