@@ -15,12 +15,9 @@ public class teste {
 
     public static void main(String[] args) {
         
-        Map<Integer, Integer> map = new HashMap<>();
-        
-        map.put(1,1);
-        map.put(null, null);
-        
-        System.out.println("ss");
+        Integer inte = Integer.getInteger("");
+
+        System.out.println(inte);
         
         /*
         Database.setStaticObject(new Database(FileManager.getFile("sci.cfg")));
