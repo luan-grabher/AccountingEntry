@@ -29,7 +29,7 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>Java-Lib-SimpleView</foreign-project>
+                <foreign-project>SQL</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>
@@ -37,7 +37,7 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>SQL</foreign-project>
+                <foreign-project>SimpleView</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>

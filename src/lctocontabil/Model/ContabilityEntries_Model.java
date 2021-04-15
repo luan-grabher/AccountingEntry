@@ -1,7 +1,6 @@
 package lctocontabil.Model;
 
 import Dates.Dates;
-import SimpleView.Loading;
 import fileManager.FileManager;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -15,6 +14,7 @@ import lctocontabil.Entity.ContabilityEntry;
 import org.ini4j.Ini;
 import sql.Database;
 import sql.SQL;
+import SimpleView.Loading;
 
 /**
  * Antes de utilizar as funcoes, defina o ini e o db, o db já está definido como
